@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import LoadingSpinner from "./LoadingSpinner.jsx";
+import BackButton from "./BackButton.jsx";
+import ErrorMessage from "./ErrorMessage.jsx";
 
 const ResourceDetail = ({ resourceId, onBack }) => {
 
@@ -58,65 +61,40 @@ const ResourceDetail = ({ resourceId, onBack }) => {
 
     if (isLoadingDetail) {
         return (
-            <div className="flex justify-center items-center py-20 bg-gray-50 rounded-2xl shadow-inner-sm">
-                <svg className="animate-spin h-10 w-10 text-main-dark" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p className="ml-4 text-xl text-gray-700 font-medium">Ressourcendetails werden geladen...</p>
-            </div>
-        );
-    }
-
-        if (!detailResource) {
-        return (
-            <div className="bg-main-dark/10 border-l-4 border-accent-light text-main-dark p-6 rounded-r-xl text-center" role="alert">
-                <button 
-                    className="text-accent-light hover:underline mb-6 flex items-center transition-colors"
-                    onClick={onBack}
-                >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Zurück zu allen Ressourcen
-                </button>
-                <p className="font-bold text-xl block mb-2">Ressource nicht gefunden</p>
-                <p className="text-lg">Die Ressource mit ID {resourceId} konnte nicht gefunden werden.</p>
-            </div>
+            <LoadingSpinner label="Ressourcendetails werden geladen..." />
         );
     }
 
     if (errorDetail) {
         return (
-            <div className="bg-red-50 border-l-4 border-red-400 text-red-800 p-6 rounded-r-xl relative text-center" role="alert">
-                <button 
-                    className="text-accent-light hover:underline mb-6 flex items-center transition-colors"
-                    onClick={onBack}
-                >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Zurück zu allen Ressourcen
-                </button>
-                <strong className="font-bold text-xl block mb-2">Ooooops!...</strong>
-                <span className="block text-lg">Fehler beim Laden der Ressourcendetails: {errorDetail}</span>
-                <p className="text-sm mt-3 text-red-700">Bitte überprüfen Sie, ob das Backend unter `http://localhost:5002/` läuft, oder versuchen Sie es später erneut.</p>
-            </div>
+        <ErrorMessage
+                variant="error"
+                title="Ooooops!..."
+                message={`Fehler beim Laden der Ressourcendetails: ${errorDetail}`}
+                hint="Bitte prüfen, ob das Backend unter http://localhost:5002 läuft, oder später erneut versuchen."
+            >
+                <BackButton onBack={onBack} label="Zurück zu allen Ressourcen"/>
+            </ErrorMessage>
         );
     }
 
+    if (!detailResource) {
+        return (
+        <ErrorMessage
+                variant="info"
+                title="Ressource nicht gefunden"
+                message={`Die Ressource mit ID ${resourceId} konnte nicht gefunden werden.`}
+            >
+                <BackButton onBack={onBack} label="Zurück zu allen Ressourcen"/>
+            </ErrorMessage>
+        );
+    }
+
+  
 
     return (
         <div className="bg-white p-8 rounded-2xl shadow-lg">
-            <button 
-                className="text-accent-light hover:underline mb-6 flex items-center transition-colors"
-                onClick={onBack}
-            >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Zurück zu allen Ressourcen
-            </button>
+           <BackButton onBack={onBack} label="Zurück zu allen Ressourcen"/>
 
             <h2 className="text-4xl font-extrabold text-main-dark mb-4">{title}</h2>
             <div className="flex items-center space-x-4 mb-6">
