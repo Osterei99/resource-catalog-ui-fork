@@ -8,18 +8,30 @@ const ResourceDetail = ({ resourceId, onBack }) => {
     const [detailResource, setDetailResource] = useState(null);
     const [isLoadingDetail, setIsLoadingDetail] = useState(true);
     const [errorDetail, setErrorDetail] = useState(null);
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
         const fetchResourceDetails = async () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             setIsLoadingDetail(true);
             setErrorDetail(null);
+            setNotFound(false);
 
             try {
                 const response = await fetch(`http://localhost:5002/resources/${resourceId}`);
 
                 if (!response.ok) {
-                    throw new Error(`HTTP-Fehler! Status: ${response.status} - ${response.statusText}`)
+                    if (response.status === 404) {
+                        setNotFound(true);
+                        setDetailResource(null);
+                        setIsLoadingDetail(false);
+                        return;
+                    }
+
+                    setErrorDetail({code: response.status, message: response.statusText});
+                    setDetailResource(null);
+                    setIsLoadingDetail(false);
+                    return;
                 }
 
                 const data = await response.json();
@@ -67,7 +79,7 @@ const ResourceDetail = ({ resourceId, onBack }) => {
 
     if (errorDetail) {
         return (
-        <ErrorMessage
+            <ErrorMessage
                 variant="error"
                 title="Ooooops!..."
                 message={`Fehler beim Laden der Ressourcendetails: ${errorDetail}`}
@@ -78,9 +90,9 @@ const ResourceDetail = ({ resourceId, onBack }) => {
         );
     }
 
-    if (!detailResource) {
+    if (notFound) {
         return (
-        <ErrorMessage
+            <ErrorMessage
                 variant="info"
                 title="Ressource nicht gefunden"
                 message={`Die Ressource mit ID ${resourceId} konnte nicht gefunden werden.`}
@@ -90,11 +102,9 @@ const ResourceDetail = ({ resourceId, onBack }) => {
         );
     }
 
-  
-
     return (
         <div className="bg-white p-8 rounded-2xl shadow-lg">
-           <BackButton onBack={onBack} label="Zurück zu allen Ressourcen"/>
+            <BackButton onBack={onBack} label="Zurück zu allen Ressourcen"/>
 
             <h2 className="text-4xl font-extrabold text-main-dark mb-4">{title}</h2>
             <div className="flex items-center space-x-4 mb-6">
