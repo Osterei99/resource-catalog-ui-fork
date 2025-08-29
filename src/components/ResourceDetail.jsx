@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import BackButton from "./BackButton.jsx";
 import ErrorMessage from "./ErrorMessage.jsx";
+import FeedbackForm from "./FeedbackForm.jsx";
 import { formatDate } from "../utils/formatDate.js";
 
 const ResourceDetail = ({ resourceId, onBack }) => {
@@ -60,15 +61,13 @@ const ResourceDetail = ({ resourceId, onBack }) => {
         feedback 
     } = detailResource || {};
 
-    const formattedDate = createdAt 
-        ? new Date(createdAt).toLocaleDateString('de-DE', {
+    const formattedDate = formatDate(createdAt, 'de-DE', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        })
-        : 'N/A';
+        });
 
     const feedbackCount = feedback?.length || 0;
 
@@ -143,7 +142,8 @@ const ResourceDetail = ({ resourceId, onBack }) => {
                     </p>
                 )}
             </div>
-
+            
+            {/*Feedbackeintreage zeigen*/}
             {feedback && feedback.length > 0 && (
                 <div className="border-t border-gray-200 pt-8 mt-8">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">Feedback</h3>
@@ -162,6 +162,12 @@ const ResourceDetail = ({ resourceId, onBack }) => {
                     </div>
                 </div>
             )}
+
+            {/*Feedback Form */}
+            <div>
+                <h3>Ihr Feedback teilen</h3>
+                <FeedbackForm resourceId={id}/>
+            </div>
         </div>
     );
 };
