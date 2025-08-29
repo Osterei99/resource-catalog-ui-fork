@@ -10,8 +10,6 @@ const ResourceCard = ({ resource, onClick }) => {
 
     const formattedDate = formatDate(createdAt);
 
-
-
     return (
         <div 
             className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-in-out flex flex-col h-full cursor-pointer"
