@@ -77,6 +77,10 @@ const ResourceDetail = ({ resourceId, onBack }) => {
         setDetailResource(updatedResource);
     };
 
+    const handleRatingSubmitted = (updatedResource) => {
+        setDetailResource(updatedResource);
+    };
+
     if (isLoadingDetail) {
         return (
             <LoadingSpinner label="Ressourcendetails werden geladen..." />
@@ -155,7 +159,7 @@ const ResourceDetail = ({ resourceId, onBack }) => {
             {/* StarRating zeigen */}
             <div className="border-t border-gray-200 pt-8 mt-8">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Ihre Bewertung geben</h3>
-                <StarRating />
+                <StarRating resourceId={id} value={averageRating} onRatingSubmitted={handleRatingSubmitted}/>
             </div>
 
             {/*Feedbackeintreage zeigen*/}

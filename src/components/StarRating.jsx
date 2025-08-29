@@ -16,11 +16,50 @@ const Star = ({filled, onMouseEnter, onMouseLeave, onClick, disabled}) => (
     </button>
 );
 
-const StarRating = ( {value = 0} ) => {
+const StarRating = ( {resourceId, value = 0, onRatingSubmitted} ) => {
 
     const [hover, setHover] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     const currentRating = hover || Math.round(value);
+
+    const sendRating = async (rating) => {
+        setIsSubmitting(true);
+        setError(null);
+
+        const newRating = {
+            ratingValue: rating,
+            userId: 'anonymous'
+        };
+
+        try {
+            const response = await fetch(`http://localhost:5002/resources/${resourceId}/ratings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newRating)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP-Fehler! Status: ${response.status} - ${response.statusText}`);
+            } 
+
+            const updatedResource = await response.json();
+            console.log('Bewertung erfolgreich gesendet', updatedResource);
+            
+            if (onRatingSubmitted) {
+                onRatingSubmitted(updatedResource);
+            }
+
+        } catch (err) {
+            console.error("Fehler beim Speichern der Bewertung: ", err);
+            setError(err.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return ( 
         <div className="flex">
@@ -30,7 +69,7 @@ const StarRating = ( {value = 0} ) => {
                     filled={star <= currentRating}
                     onMouseEnter={() => setHover(star)}
                     onMouseLeave={() => setHover(0)}
-                    onClick={() => {}}
+                    onClick={() => sendRating(star)}
                     disabled={false}
                 />                    
             ))}
