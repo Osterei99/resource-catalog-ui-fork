@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const FeedbackForm = ( {resourceId} ) => {
+const FeedbackForm = ( {resourceId, onFeedbackSubmitted } ) => {
     const [feedbackText, setFeedbackText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorPost, setErrorPost] = useState(null);
@@ -33,7 +33,10 @@ const FeedbackForm = ( {resourceId} ) => {
             } 
 
             const updatedResource = await response.json();
-            console.log('Feedback erfolgreich gesendet', updatedResource)
+            console.log('Feedback erfolgreich gesendet', updatedResource);
+            if (onFeedbackSubmitted) {
+                onFeedbackSubmitted(updatedResource);
+            }
 
         } catch (err) {
             console.error("Fehler beim Abrufen der Ressourcen: ", err);

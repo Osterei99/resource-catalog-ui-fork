@@ -71,6 +71,10 @@ const ResourceDetail = ({ resourceId, onBack }) => {
 
     const feedbackCount = feedback?.length || 0;
 
+    const handleFeedbackSubmitted = (updatedResource) => {
+        setDetailResource(updatedResource);
+    };
+
     if (isLoadingDetail) {
         return (
             <LoadingSpinner label="Ressourcendetails werden geladen..." />
@@ -169,7 +173,7 @@ const ResourceDetail = ({ resourceId, onBack }) => {
             {/*Feedback Form */}
             <div className="border-t border-gray-200 pt-8 mt-8">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Ihr Feedback teilen</h3>
-                <FeedbackForm resourceId={id}/>
+                <FeedbackForm resourceId={id} onFeedbackSubmitted={handleFeedbackSubmitted}/>
             </div>
         </div>
     );
