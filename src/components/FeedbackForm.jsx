@@ -32,14 +32,14 @@ const FeedbackForm = ( {resourceId} ) => {
                 throw new Error(`HTTP-Fehler! Status: ${response.status} - ${response.statusText}`);
             } 
 
-            const createdFeedback = await response.json();
-            console.log('Feedback erfolgreich gesendet', createdFeedback)
+            const updatedResource = await response.json();
+            console.log('Feedback erfolgreich gesendet', updatedResource)
 
         } catch (err) {
             console.error("Fehler beim Abrufen der Ressourcen: ", err);
             setErrorPost(err.message);
         } finally {
-            isSubmitting(false);
+            setIsSubmitting(false);
             setFeedbackText('');
         }
     };
@@ -62,7 +62,6 @@ const FeedbackForm = ( {resourceId} ) => {
             >
                 {isSubmitting ? 'Wird gesendet...' : 'Feedback senden'}
             </button>
-
         </form>
     );
 };
