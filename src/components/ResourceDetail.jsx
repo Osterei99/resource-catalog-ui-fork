@@ -4,6 +4,7 @@ import BackButton from "./BackButton.jsx";
 import ErrorMessage from "./ErrorMessage.jsx";
 import FeedbackForm from "./FeedbackForm.jsx";
 import FeedbackItem from "./FeedbackItem.jsx";
+import StarRating from "./StarRating.jsx";
 import { formatDate } from "../utils/formatDate.js";
 
 const ResourceDetail = ({ resourceId, onBack }) => {
@@ -151,6 +152,12 @@ const ResourceDetail = ({ resourceId, onBack }) => {
                 )}
             </div>
             
+            {/* StarRating zeigen */}
+            <div className="border-t border-gray-200 pt-8 mt-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Ihre Bewertung geben</h3>
+                <StarRating />
+            </div>
+
             {/*Feedbackeintreage zeigen*/}
             {feedback && feedback.length > 0 && (
                 <div className="border-t border-gray-200 pt-8 mt-8">
