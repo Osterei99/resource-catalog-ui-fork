@@ -1,0 +1,38 @@
+services:
+  topics-api:
+    build:
+      context: ../topic_skill_service_example_fork
+      dockerfile: Dockerfile
+    image: "${IMAGE_PREFIX}/topics-api:${VERSION}"
+    container_name: topics-api
+    ports:
+      - "5050:5000"
+    networks:
+      - app-network
+    
+  resources-api:
+    build:
+      context: ../resource_catalog_service_example_fork
+      dockerfile: Dockerfile
+    image: "${IMAGE_PREFIX}/resources-api:${VERSION}"
+    container_name: resources-api
+    ports:
+      - "5002:5002"
+    networks:
+      - app-network
+
+  resources-frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile 
+    image: "${IMAGE_PREFIX}/resources-frontend:${VERSION}"
+    container_name: resources-frontend
+    ports:
+      - "5173:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  
