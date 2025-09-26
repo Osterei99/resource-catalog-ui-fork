@@ -7,6 +7,7 @@ import TopicsSkills from './pages/TopicsSkills.jsx';
 import GeneratePath from './pages/GeneratePath.jsx';
 import LearningPaths from './pages/LearningPaths.jsx';
 import LearningPathDetail from './pages/LearningPathDetail.jsx';
+import ResourceDetailPage from './pages/ResourceDetailPage.jsx';
 
 function HomeCatalog() {
   const [selectedResourceId, setSelectedResourceId] = useState(null);
@@ -46,6 +47,7 @@ function App() {
           <Route path="/generate" element={<GeneratePath />} />
           <Route path="/paths" element={<LearningPaths />} />
           <Route path="/paths/:pathId" element={<LearningPathDetail />} />
+          <Route path="/resources/:id" element={<ResourceDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

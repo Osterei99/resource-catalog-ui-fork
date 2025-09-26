@@ -4,7 +4,7 @@ export const RESOURCES_API =
 
 export const TOPICS_API =
   (import.meta?.env?.VITE_TOPICS_API_BASE) ||
-  'http://localhost:5005';
+  'http://localhost:5050';
 
 export const LEARNING_API =
   (import.meta?.env?.VITE_LEARNING_API_BASE) ||

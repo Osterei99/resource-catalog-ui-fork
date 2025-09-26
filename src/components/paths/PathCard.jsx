@@ -1,10 +1,11 @@
+// src/components/paths/PathCard.jsx
 import React from 'react';
 import GoalsSubtitle from './GoalsSubtitle';
 import ResourceChip from './ResourceChip';
 
 /**
  * Props:
- *  - path: { pathId, userId, createdAt, goals, milestones }
+ *  - path: { pathId, userId, createdAt, summary?, goals, milestones }
  *  - mapTopicIdToName: (id) => string | undefined
  *  - mapSkillIdToName: (id) => string | undefined
  *  - mapResIdToTitle: (id) => string | undefined
@@ -16,14 +17,25 @@ export default function PathCard({
   mapResIdToTitle,
 }) {
   const created = path.createdAt ? new Date(path.createdAt).toLocaleString() : '';
-  const goalTopicNames = (path.goals?.topics || []).map(x =>
-    // allow both id or name already
-    typeof x === 'string' ? (mapTopicIdToName(x) || x) : (mapTopicIdToName(x?.id) || x?.name || '')
-  ).filter(Boolean);
 
-  const goalSkillNames = (path.goals?.skills || []).map(x =>
-    typeof x === 'string' ? (mapSkillIdToName(x) || x) : (mapSkillIdToName(x?.id) || x?.name || '')
-  ).filter(Boolean);
+  // Resolve goals (names or fallback to ids/names already present)
+  const goalTopicNames = (path.goals?.topics || [])
+    .map(x => typeof x === 'string' ? (mapTopicIdToName(x) || x) : (mapTopicIdToName(x?.id) || x?.name || ''))
+    .filter(Boolean);
+
+  const goalSkillNames = (path.goals?.skills || [])
+    .map(x => typeof x === 'string' ? (mapSkillIdToName(x) || x) : (mapSkillIdToName(x?.id) || x?.name || ''))
+    .filter(Boolean);
+
+  // Build a friendly title if no summary exists
+  const fallbackTitle = (() => {
+    const parts = [];
+    if (goalTopicNames.length) parts.push(`Themen: ${goalTopicNames.slice(0, 3).join(', ')}${goalTopicNames.length > 3 ? ' …' : ''}`);
+    if (goalSkillNames.length) parts.push(`Skills: ${goalSkillNames.slice(0, 3).join(', ')}${goalSkillNames.length > 3 ? ' …' : ''}`);
+    return parts.length ? parts.join(' • ') : 'Learning Path';
+  })();
+
+  const title = (path.summary || '').trim() || fallbackTitle;
 
   // Collect unique resource IDs from milestones (if present)
   const resIds = new Set();
@@ -39,15 +51,21 @@ export default function PathCard({
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-500">Path</div>
+        <div className="text-sm text-gray-500">Erstellt</div>
         <div className="text-xs text-gray-500">{created}</div>
       </div>
-      <div className="mt-1 font-semibold text-gray-900">{path.pathId}</div>
+
+      {/* MAIN TITLE = SUMMARY (fallback to goals-based title). Truncate to keep cards tight. */}
+      <h3 className="mt-2 text-base font-semibold text-gray-900 line-clamp-2">
+        {title}
+      </h3>
+
+      {/* User (kept subtle) */}
       <div className="mt-1 text-sm text-gray-700">
         <span className="font-medium">User:</span> {path.userId || '—'}
       </div>
 
-      {/* Goals as subtitle */}
+      {/* Goals as subtitle (chips) */}
       <div className="mt-3">
         <GoalsSubtitle topicNames={goalTopicNames} skillNames={goalSkillNames} />
       </div>
